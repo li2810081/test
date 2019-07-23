@@ -8,7 +8,7 @@ async function start() {
     var ncount = 0
     
 
-    var ser = async (str) => {
+    var ser = async (str, cookie, code) => {
         ncount++
         var n = cp.fork('./tool/childprocess.js');
         n.send(str, cookie, code)
