@@ -3,18 +3,16 @@ var path = require('path')
 var request = require('request')
 var fs = require('fs');
 var superagent = require('superagent')
-var phantom = require('phantomjs')
-const readline = require('readline');
 
 /**
- * 读取验证码
+ * 读取验证码 pa是path路径
  */
 var ocr = (pa) => {
     return new Promise((resolve, reject) => {
         var myImage = path.resolve(__dirname, pa)
         tesseract.recognize(myImage)
             .then(data => {
-                ////console.log('then text is :', data.text);
+                console.log('then text is :', data.text);
                 return data.text
             })
             .then(d => {
@@ -39,7 +37,7 @@ var loadpic = async () => {
      */
     function getCookie() {
         return new Promise((resolve, reject) => {
-            superagent.get("https://www.sellersuniononline.com/admin/login")
+            superagent.get("*")
                 .set({
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
                     'Accept-Encoding': 'gzip, deflate, br',
@@ -66,7 +64,7 @@ var loadpic = async () => {
     function downloadpic(selfCookie) {
         return new Promise((resolve, reject) => {
             var src = {
-                url: "https://www.sellersuniononline.com/checkcode.bmp",
+                url: "*",
                 headers: {
                     'Cookie': selfCookie
                 }
@@ -120,7 +118,7 @@ var loadpic = async () => {
 
 var login = (pwd,cookie,code) => {
     return new Promise((resolve, reject) => {
-        superagent.post("https://www.sellersuniononline.com/admin/login")
+        superagent.post("*")
             .set("Cookie", cookie)
             .set("Content-Type", "application/x-www-form-urlencoded")
             .send("username=grace&password="+pwd+"&checkcode="+code)
@@ -144,41 +142,5 @@ var login = (pwd,cookie,code) => {
 
 }
 
-// (async function (params) {
-    
-//     var vdata=await loadpic()
-    
-//     const rl = readline.createInterface({
-//       input: fs.createReadStream('pwd.txt')
-//     });
-    
-//     rl.on('line', (line) => {
-//       ////console.log(`文件的单行内容：${line}`);
-//       login(line,vdata.cookie,vdata.code)
-//       .then(l=>{
-//          fs.appendFileSync("result.log",l+"\n")      
-//       })
-//     }); 
-// })()
 
-
-
-//loadpic().then(v=>//console.log(JSON.stringify(v)))
-
-// ocr("./img/checkcode.bmp") declared
-// .then(d=>{
-//     //console.log("识别结果：  "+d.text);    
-// })
-
-// login().then(v => {
-//     //console.log(v);
-// })
-
-
-// fs.readFile('pwd.txt', function (err, data) {
-//   if (err) return console.error(err);
-//   console.log(data.toString().split("\r\n"));
-// });
-
-
-module.exports={"login":login,'loadpic':loadpic}
+module.exports={"ocr":ocr, "login":login,'loadpic':loadpic}
