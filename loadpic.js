@@ -3,14 +3,13 @@ var fs = require('fs')
 var cheerio = require('cheerio')
 var async = require("async")
 var request = require('request')
-var download = require('download')
 
 
 /**
  * 采集页面类
  * url 采集网址 box 图片集合  eachhref 图片src
  */
-moudle.exports =async function ImgPage(url, box, eachhref) {
+module.exports = function ImgPage(url, box, eachhref) {
 	this.url = url
 	this.box = box
 	this.eachhref = eachhref
@@ -47,13 +46,14 @@ moudle.exports =async function ImgPage(url, box, eachhref) {
 		})
 	}
 
-	/**
+	/**unable to verify the first certificate
 	 * 生成保存图片信息的方法
 	 */
 	var buildName = async function (arr) {
 		let results = arr.splice(0, 90)
 		async.each(results, function iteratee(item, callback) {
-			// 获取图片地址
+			setTimeout(() => {
+				// 获取图片地址
 			var urls = item.href;
 			// 获取图片名字
 			var objName = item.filename + (urls.indexOf("jpg") > 0 ? '.jpg' : ".gif");
@@ -65,7 +65,14 @@ moudle.exports =async function ImgPage(url, box, eachhref) {
 			var targetPath = basePath + "/tmp";
 			console.log(urls + "||" + item.filename)
 			// 下载图片 
-			_download(urls, basePath, objName);
+			_download(urls, basePath, objName)
+			.then(s=>{
+				console.log(s);
+			}).catch(err=>{
+				console.log(err);
+			});
+			}, 800);
+			
 		})
 	}
 
@@ -76,13 +83,23 @@ moudle.exports =async function ImgPage(url, box, eachhref) {
 	// dir：目标路径
 	// filename：图片名字
 	async function _download(uri, dir, filename) {
-		if (!fs.existsSync(dir + "/" + filename)) {
-			var data = await download(uri)
-			fs.writeFileSync(dir + "/" + filename, data);
+     return new Promise((resolve, reject) => {
+		if (!fs.existsSync(dir + "/" + filename)) {			
+			//采用request模块，向服务器发起一次请求，获取图片资源
+			request.head(uri, function(err, res, body) {
+				if (err) {
+				  console.log("下载错误： "+err);
+				}
+			  });
+			  request(uri).pipe(fs.createWriteStream(dir + "/" + filename))
+			  .on('close', function() {
+				resolve("下载成功: "+filename);
+			  })
 		} else {
-			console.log("已存在:" + filename);
-
+			reject("已存在: " + filename);
 		}
+	 })
+		
 	};
 
 
@@ -97,34 +114,9 @@ moudle.exports =async function ImgPage(url, box, eachhref) {
 				.then(arr => {
 					buildName(arr)
 				})
+				.catch(err => {
+					console.log("出错了：" + err);
+				})
 		})
 	}
 }
-//哈哈MX成人版 http://www.qiumeimei.com/image/page/1
-var haha = new ImgPage(
-	(function () {
-		var arrlist = []
-		for (let index = 1; index < 3; index++) {
-			arrlist.push("http://www.qiumeimei.com/image/page/" + index)
-		}
-		return arrlist
-	})(),
-	".panel.clearfix img",
-	'data-lazy-src'
-)
-haha.load()
-
-
-
-//85814图库 https://www.85814.com/meinv/guzhuangmeinv/
-var tu85814 = new ImgPage(
-	(function () {
-		var arrlist = ["https://www.85814.com/meinv/xingganmeinv/"]
-		for (let index = 2; index < 4; index++) {
-			arrlist.push("https://www.85814.com/meinv/xingganmeinv/index_" + index + ".html")
-		}
-		return arrlist
-	})(),
-	"#l a img",
-	'src'
-)
