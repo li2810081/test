@@ -76,7 +76,6 @@ async function _download(uri, dir, filename) {
 	//页面dom处理
 	var dompic= function ($) {
 		var arr = []
-
 		// 下面就是通过cheerio去找html网页中的数据，并存放到arr中
 		$(".panel.clearfix img").each(function (index, element) {
 			//console.log(element)
@@ -97,7 +96,7 @@ async function _download(uri, dir, filename) {
 	//生成到指定页数数组的方法
 	var f = length => Array.from({ length }).map((v, k) => k);
 	async.each(f(PAGE), function iteratee(item, callback) {
-		getArr(URL + (item + 1),dompic($))
+		getArr(URL + (item + 1),dompic)
 			.then(arr => {
 				buildName(arr)
 			})
