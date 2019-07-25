@@ -1,6 +1,6 @@
 # 测试的一些例子
 
-1. ```npm run downloadpic```用于下载网址图片并保存到本地
+1. ```loadpic.js```用于下载网址图片并保存到本地
 
 ```javascript
 

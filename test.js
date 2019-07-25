@@ -6,7 +6,7 @@ var ImgPage = require("./loadpic")
 // var haha = new ImgPage(
 // 	(function () {
 // 		var arrlist = []
-// 		for (let index = 100; index < 105; index++) {
+// 		for (let index = 1; index < 15; index++) {
 // 			arrlist.push("http://www.qiumeimei.com/image/page/" + index)
 // 		}
 // 		return arrlist
@@ -35,15 +35,31 @@ var ImgPage = require("./loadpic")
 
 //美图录 https://www.meitulu.com/item/6062_3.html
 
-var meitu = new ImgPage(
-	(function () {
-		var arrlist = ["https://www.meitulu.com/item/6062.html"]
-		for (let index = 2; index < 10; index++) {
-			arrlist.push("https://www.meitulu.com/item/6062_" + index+".html")
-		}
-		return arrlist
-	})(),
-	".content img",
-	'src'
-)
-meitu.load()
+// var meitu = new ImgPage(
+// 	(function () {
+// 		var arrlist = ["https://www.meitulu.com/item/6062.html"]
+// 		for (let index = 2; index < 10; index++) {
+// 			arrlist.push("https://www.meitulu.com/item/6062_" + index+".html")
+// 		}
+// 		return arrlist
+// 	})(),
+// 	".content img",
+// 	'src'
+// )
+// meitu.load()
+
+var async=require('async')
+
+// var events = require('events');
+// var eventEmitter = new events.EventEmitter();
+
+// eventEmitter.on('my_event', (s) => {
+//   console.log(s+'data received succesfully.');
+// });
+// for (let index = 0; index < 100; index++) {
+// 	eventEmitter.emit('my_event',"老漂亮了"+index);
+	
+// }
+
+console.log( __filename );
+console.log(process.getuid());
