@@ -51,9 +51,8 @@ module.exports = function ImgPage(url, box, eachhref) {
 	 */
 	var buildName = async function (arr) {
 		let results = arr.splice(0, 90)
-		async.each(results, function iteratee(item, callback) {
-			setTimeout(() => {
-				// 获取图片地址
+		async.eachSeries(results, function (item, callback) {
+			// 获取图片地址
 			var urls = item.href;
 			// 获取图片名字
 			var objName = item.filename + (urls.indexOf("jpg") > 0 ? '.jpg' : ".gif");
@@ -63,16 +62,15 @@ module.exports = function ImgPage(url, box, eachhref) {
 				fs.mkdirSync(basePath)
 			}
 			var targetPath = basePath + "/tmp";
-			console.log(urls + "||" + item.filename)
+			console.log("开始下载："+urls + "||" + item.filename)
 			// 下载图片 
 			_download(urls, basePath, objName)
-			.then(s=>{
-				console.log(s);
-			}).catch(err=>{
-				console.log(err);
-			});
-			}, 800);
-			
+				.then(s => {
+					console.log(s);
+					callback(null)
+				}).catch(err => {
+					console.log(err);
+				});
 		})
 	}
 
@@ -83,23 +81,23 @@ module.exports = function ImgPage(url, box, eachhref) {
 	// dir：目标路径
 	// filename：图片名字
 	async function _download(uri, dir, filename) {
-     return new Promise((resolve, reject) => {
-		if (!fs.existsSync(dir + "/" + filename)) {			
-			//采用request模块，向服务器发起一次请求，获取图片资源
-			request.head(uri, function(err, res, body) {
-				if (err) {
-				  console.log("下载错误： "+err);
-				}
-			  });
-			  request(uri).pipe(fs.createWriteStream(dir + "/" + filename))
-			  .on('close', function() {
-				resolve("下载成功: "+filename);
-			  })
-		} else {
-			reject("已存在: " + filename);
-		}
-	 })
-		
+		return new Promise((resolve, reject) => {
+			if (!fs.existsSync(dir + "/" + filename)) {
+				//采用request模块，向服务器发起一次请求，获取图片资源
+				request.head(uri, function (err, res, body) {
+					if (err) {
+						console.log("下载错误： " + err);
+					}
+				});
+				request(uri).pipe(fs.createWriteStream(dir + "/" + filename))
+					.on('close', function () {
+						resolve("下载成功: " + filename);
+					})
+			} else {
+				reject("已存在: " + filename);
+			}
+		})
+
 	};
 
 
