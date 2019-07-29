@@ -4,7 +4,6 @@ var cheerio = require('cheerio')
 var async = require("async")
 var request = require('request')
 
-
 /**
  * 采集页面类
  * @param {[string]} url "采集网址"
@@ -22,23 +21,23 @@ module.exports = function ImgPage(url, box, eachhref) {
 			arr.push(
 				{
 					href: $eleItem.attr(eachhref),
-					filename: $eleItem.attr('alt') != undefined ? $eleItem.attr('alt') : new Date().getTime()
+					filename: ($eleItem.attr('alt') != undefined ? $eleItem.attr('alt') : new Date().getTime())+"_"+index
 				}
 			);
 		});
 		return arr
 	}
 	this.load = () => start(this)
-
+    this.getarr=(urlstr)=>getArr(urlstr,this.dom)
 	/**
 	 * 获取网页元素
-	 * param 网址信息 如：http://www.qiumeimei.com/image/page/1
-	 * elementFuction 回调方法带一个$,返回一个数组
+	 * @param {string} urlstr  网址信息 如：http://www.qiumeimei.com/image/page/1
+	 * @param {Function} elementFuction  回调方法带一个$,返回一个数组
 	 */
-	var getArr = async function (params, elementFuction) {
+	var getArr = async function (urlstr, elementFuction) {
 		return new Promise((resolve, reject) => {
 			var arr = []
-			superagent.get(params)//请求页面地址
+			superagent.get(urlstr)//请求页面地址
 				.end(function (err, sres) {//页面获取到的数据
 					if (err) reject(err);
 					var $ = cheerio.load(sres.text);//用cheerio解析页面数据

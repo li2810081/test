@@ -48,7 +48,53 @@ var ImgPage = require("./loadpic")
 // )
 // meitu.load()
 
-var async=require('async')
+//绝美网
+// const test = new ImgPage(["http://www.juemei.com/mm/sfz/"],
+// ".cell.item a"
+// ,"href");
+
+// test.getarr("http://www.juemei.com/mm/sfz/")
+// .then(v=>{
+// 	new ImgPage(
+// 			(function () {
+// 				var arr=[]
+// 				v.splice(0,10).forEach(element => {
+// 					arr.push("http://www.juemei.com"+element.href)
+// 					for (let index = 2; index < 15; index++){
+// 						arr.push(("http://www.juemei.com"+element.href).replace(".html","_"+index+".html"))
+// 					}
+// 				});
+// 				return arr
+// 			})(),
+// 			".wrap img",
+// 			'src'
+// 		).load()
+// })
+
+//7160
+const test = new ImgPage(["https://m.7160.com/"],
+".libox  a"
+,"href");
+
+test.getarr("https://m.7160.com/")
+.then(v=>{
+	new ImgPage(
+			(function () {
+				var arr=[]
+				v.splice(0,30).forEach((element,i) => {
+					if (!i%2) {
+						arr.push("https://m.7160.com/"+element.href)
+						for (let index = 2; index < 5; index++){
+							arr.push("https://m.7160.com/"+element.href+"index_"+index+".html")
+						}
+					}
+				});
+				return arr
+			})(),
+			".arcmain img",
+			'src'
+		).load()
+})
 
 // var events = require('events');
 // var eventEmitter = new events.EventEmitter();
@@ -61,5 +107,4 @@ var async=require('async')
 	
 // }
 
-console.log( __filename );
-console.log(process.getuid());
+
